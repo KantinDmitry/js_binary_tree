@@ -2,98 +2,100 @@
 
 class BinaryTree {
 
-	constructor() {
-		this.root = null
-	}
+  constructor() {
+    this.root = null;
+  }
 
-	insert(data) {
-		if(this.root) this.recursive_insert(this.root, data);
-		else this.root = new Node(data);
-	}
+  insert(data) {
+    if (this.root) this.recursiveInsert(this.root, data);
+    else this.root = new Node(data);
+  }
 
-	recursive_insert(node, data){
-		if(!node.data) node.data = data;
-		else {
-			var direction = (data > node.data)? 'right' : 'left';
-			if (!node[direction])	node[direction] = new Node();
-			this.recursive_insert(node[direction], data);
-		}
+  recursiveInsert(node, data) {
+    if (!node.data) node.data = data;
+    else {
+      var direction = (data > node.data) ? 'right' : 'left';
+      if (!node[direction])  node[direction] = new Node();
+      this.recursiveInsert(node[direction], data);
+    }
+  }
 
-	}
+  contains(data) {
+    return this.recursiveContains(this.root, data);
+  }
 
-	contains(data) {
-		return this.recursive_contains(this.root, data)
-	}
+  recursiveContains(node, data) {
+    var found = (node.data == data);
+    if (node.right) found = found || this.recursiveContains(node.right, data);
+    if (node.left) found = found || this.recursiveContains(node.left, data);
+    return found;
+  }
 
-	recursive_contains(node, data){
-		var found = (node.data == data);
-		if(node.right) found = found || this.recursive_contains(node.right, data);
-		if(node.left) found = found || this.recursive_contains(node.left, data);
-		return found;
-	}
+  remove(data) {
+    if (this.root && this.root.data == data) {
+      this.removeRoot();
+      return;
+    }
 
-	remove(data) {
-		if(this.root && this.root.data == data){
-			this.remove_root();
-			return;
-		}
-		var previous_node = this.find_previous_node(this.root, data);
-		if(!previous_node) return;
-		var direction;
-		if(previous_node.right && previous_node.right.data == data) direction = 'right';
-		if(previous_node.left && previous_node.left.data == data) direction = 'left';
-		var deliting_node = previous_node[direction];
-		if(deliting_node.right){
-			previous_node[direction] = deliting_node.right;
-			var extending_node = deliting_node.right;
-			while(extending_node.left) extending_node = extending_node.left;
-			extending_node.left = deliting_node.left
-		}
-		else
-			previous_node[direction] = deliting_node.left;
-	}
+    var previousNode = this.findPreviousNode(this.root, data);
+    if (!previousNode) return;
+    var direction;
+    if (previousNode.right && previousNode.right.data == data) direction = 'right';
+    if (previousNode.left && previousNode.left.data == data) direction = 'left';
+    var deletingNode = previousNode[direction];
+    if (deletingNode.right) {
+      previousNode[direction] = deletingNode.right;
+      var extendingNode = deletingNode.right;
+      while (extendingNode.left) extendingNode = extendingNode.left;
+      extendingNode.left = deletingNode.left;
+    } else
+      previousNode[direction] = deletingNode.left;
+  }
 
-	remove_root(){
-		if(!this.root.right){
-			this.root = this.root.left;
-			return;
-		}
-		var left_branch = this.root.left;
-		this.root = this.root.right
-		var extending_node = this.root;
-		while(extending_node.left) extending_node = extending_node.left;
-		extending_node.left = left_branch
-	}
+  removeRoot() {
+    if (!this.root.right) {
+      this.root = this.root.left;
+      return;
+    }
 
-	find_previous_node(node, data){
-		var previous_node = null;
-		if(node.right){
-			if(node.right.data == data) previous_node = node;
-			else
-				previous_node = previous_node || this.find_previous_node(node.right, data);
-		}
-		if(node.left){
-			if(node.left.data == data) previous_node = node;
-			else
-				previous_node = previous_node || this.find_previous_node(node.left, data);
-		}
-		return previous_node;
-	}
+    var leftBranch = this.root.left;
+    this.root = this.root.right;
+    var extendingNode = this.root;
+    while (extendingNode.left) extendingNode = extendingNode.left;
+    extendingNode.left = leftBranch;
+  }
 
-	size() {
-		this.elements_count = 0;
-		this.recursice_size(this.root);
-		return this.elements_count;
-	}
+  findPreviousNode(node, data) {
+    var previousNode = null;
+    if (node.right) {
+      if (node.right.data == data) previousNode = node;
+      else
+        previousNode = previousNode || this.findPreviousNode(node.right, data);
+    }
 
-	recursice_size(node){
-		if(!node) return;
-		this.elements_count++;
-		if(node.right) this.recursice_size(node.right);
-		if(node.left) this.recursice_size(node.left);
-	}
+    if (node.left) {
+      if (node.left.data == data) previousNode = node;
+      else
+        previousNode = previousNode || this.findPreviousNode(node.left, data);
+    }
 
-	isEmpty() {
-		return (this.root == null);
-	}
+    return previousNode;
+  }
+
+  size() {
+    this.elementsCount = 0;
+    this.recursiceSize(this.root);
+    return this.elementsCount;
+  }
+
+  recursiceSize(node) {
+    if (!node) return;
+    this.elementsCount++;
+    if (node.right) this.recursiceSize(node.right);
+    if (node.left) this.recursiceSize(node.left);
+  }
+
+  isEmpty() {
+    return (this.root == null);
+  }
 }
