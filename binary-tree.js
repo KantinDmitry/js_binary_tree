@@ -26,8 +26,8 @@ class BinaryTree {
 
   recursiveContains(node, data) {
     var found = (node.data == data);
-    if (node.right) found = found || this.recursiveContains(node.right, data);
-    if (node.left) found = found || this.recursiveContains(node.left, data);
+    if (node.right && node.data < data) found = found || this.recursiveContains(node.right, data);
+    if (node.left && node.data > data) found = found || this.recursiveContains(node.left, data);
     return found;
   }
 
